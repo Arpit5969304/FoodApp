@@ -1,38 +1,55 @@
+import { NavLink } from "react-router";
+import "./Meal.css";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import {v4 as uuidv4} from 'uuid';
-import  "./Meal.css";
-import { NavLink } from 'react-router';
-export default function Meal({detail}){
+export default function Meal({ detail }) {
+  // ⏳ Loading state
+  if (!detail) {
+    return <h2 className="statusMsg">Loading dishes...</h2>;
+  }
 
-    return(
+  // ❌ No data found state
+  if (detail.length === 0) {
+    return (
+      <h2 className="statusMsg notFound">
+        😔 Dish not found. Try another search!
+      </h2>
+    );
+  }
 
-       <>
-        <div className="meal">
+  // ✅ Data available
+  return (
+    <div className="mealGrid">
+      {detail.map((currItem) => (
+        <Card className="mealCard" key={currItem.idMeal}>
+          <CardMedia
+            component="img"
+            height="200"
+            image={currItem.strMealThumb}
+            alt={currItem.strMeal}
+          />
 
-            {
-              !detail ?"":detail.map((currItem)=>{
+          <CardContent>
+            <Typography variant="h6" align="center">
+              {currItem.strMeal}
+            </Typography>
+          </CardContent>
 
-                  console.log(currItem);
-                 
-                  return(
-                    <div className='mealImg'key={uuidv4()}> 
-
-                     <img src={currItem.strMealThumb}/>
-                     <p>{currItem.strMeal}</p>
-                     <NavLink to={`${currItem.idMeal}`}><button>recipie</button></NavLink>
-                    </div>
-                 
-                  )
-              })
-            }
-        </div>
-          
-      </>
-    )
+          <CardActions className="cardActions">
+            <NavLink to={`${currItem.idMeal}`} className="link">
+              <Button variant="contained" color="warning">
+                View Recipe
+              </Button>
+            </NavLink>
+          </CardActions>
+        </Card>
+      ))}
+    </div>
+  );
 }
+
